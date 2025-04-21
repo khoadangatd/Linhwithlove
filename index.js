@@ -23,40 +23,72 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isOverflown(letter)) {
       letter.classList.add("center");
     }
+
     let offsetX, offsetY;
+
+    const startDrag = (x, y, rect) => {
+      letter.style.position = "fixed";
+      letter.style.left = `${rect.left}px`;
+      letter.style.top = `${rect.top}px`;
+      offsetX = x - rect.left;
+      offsetY = y - rect.top;
+      letter.style.zIndex = zIndexCounter++;
+    };
+
+    const moveDrag = (x, y) => {
+      letter.style.left = `${x - offsetX}px`;
+      letter.style.top = `${y - offsetY}px`;
+    };
+
+    // Mouse support
     letter.addEventListener("mousedown", (e) => {
       if (e.target.tagName !== "BUTTON") {
         const rect = e.target.getBoundingClientRect();
+        startDrag(e.clientX, e.clientY, rect);
 
-        letter.style.position = "fixed";
-        letter.style.left = `${rect.left}px`;
-        letter.style.top = `${rect.top}px`;
-
-        offsetX = e.clientX - rect.left;
-        offsetY = e.clientY - rect.top;
-
-        letter.style.zIndex = zIndexCounter++;
-        const moveAt = (posX, posY) => {
-          letter.style.left = `${posX - offsetX}px`;
-          letter.style.top = `${posY - offsetY}px`;
+        const onMouseMove = (moveEvent) => {
+          moveDrag(moveEvent.clientX, moveEvent.clientY);
         };
-        const onMouseMove = (moveEvent) =>
-          moveAt(moveEvent.clientX, moveEvent.clientY);
+
         const onMouseUp = () => {
           document.removeEventListener("mousemove", onMouseMove);
           document.removeEventListener("mouseup", onMouseUp);
         };
+
         document.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseup", onMouseUp);
       }
     });
+
+    // Touch support
+    letter.addEventListener("touchstart", (e) => {
+      if (e.target.tagName !== "BUTTON") {
+        const touch = e.touches[0];
+        const rect = e.target.getBoundingClientRect();
+        startDrag(touch.clientX, touch.clientY, rect);
+
+        const onTouchMove = (moveEvent) => {
+          const touchMove = moveEvent.touches[0];
+          moveDrag(touchMove.clientX, touchMove.clientY);
+        };
+
+        const onTouchEnd = () => {
+          document.removeEventListener("touchmove", onTouchMove);
+          document.removeEventListener("touchend", onTouchEnd);
+        };
+
+        document.addEventListener("touchmove", onTouchMove, { passive: false });
+        document.addEventListener("touchend", onTouchEnd);
+      }
+    });
   });
 
+  // Open envelope
   document.querySelector("#openEnvelope").addEventListener("click", () => {
     document.querySelector(".envelope").classList.add("active");
   });
 
-  console.log(document, "document");
+  // Close letter
   const closeButtons = document.querySelectorAll(".closeLetter");
   closeButtons.forEach((button) => {
     button.addEventListener("click", (e) => {
@@ -68,6 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Heart animation
   function createHeart() {
     const heart = document.createElement("div");
     heart.classList.add("heart-icon");

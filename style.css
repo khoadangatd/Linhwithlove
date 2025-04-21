@@ -2,11 +2,11 @@
 
 :root {
   --envelope-x: 300px;
-  --envelope-y: 200px;
+  --envelope-y: 480px;
   --envelope-bg: Moccasin;
   --envelope-shadow: Peru;
   --letter-x: 250px;
-  --letter-y: calc(250px - 1rem - 10px);
+  --letter-y: calc(480px - 1rem - 10px);
   --letter-bg: AntiqueWhite;
   --letter-shadow: BurlyWood;
   --letter-text: #180d07;
@@ -103,12 +103,16 @@ body {
 
 .envelope-flap::before {
   border-radius: 5rem;
-  bottom: 30px;
+  bottom: 125px;
   border-radius: 5rem;
   top: auto;
 }
 
 @media (min-width: 650px) {
+  .envelope-bottom::before {
+    top: 60%;
+  }
+
   .envelope-flap::before {
     bottom: 100px;
   }
@@ -125,7 +129,7 @@ body {
 }
 
 .envelope-bottom::before {
-  top: 60%;
+  top: 55%;
   border-radius: 5rem;
 }
 
@@ -144,13 +148,14 @@ body {
       bottom/100% 50%;
   background-repeat: no-repeat;
   left: 50%;
-  top: 70%;
+  top: 55%;
   transform: translate(-50%, -50%);
   cursor: pointer;
 }
 
 @media (min-width: 650px) {
   .heart {
+    top: 70%;
     width: 150px;
   }
 }
